@@ -1,5 +1,6 @@
 <?php
-// about.php
+session_start();
+include '../../database/db.php';
 ?>
 
 <!DOCTYPE html>

@@ -2,11 +2,6 @@
 // navbar.php
 session_start();
 
-// Example: you might store user info like this after login
-// $_SESSION['user'] = [
-//     'name' => 'Tina',
-//     'profile_pic' => 'uploads/tina.jpg'
-// ];
 ?>
 
 <nav>

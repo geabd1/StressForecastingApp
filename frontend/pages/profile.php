@@ -1,27 +1,6 @@
 <?php
 session_start();
-
-// Check if user is logged in, redirect if not
-if (!isset($_SESSION['user_id'])) {
-    header('Location: signin.php');
-    exit();
-}
-
-// Sample user data - in real app, this would come from database
-$userData = [
-    'user_id' => $_SESSION['user_id'],
-    'username' => $_SESSION['username'] ?? 'Jane',
-    'email' => $_SESSION['email'] ?? 'jane@example.com',
-    'join_date' => $_SESSION['join_date'] ?? 'January 2024'
-];
-
-// Sample recent activity - in real app, this would come from database
-$recentActivity = [
-    ['action' => 'Created new weather forecast for weekend', 'time' => '2 hours ago'],
-    ['action' => 'Updated location preferences', 'time' => '3 hours ago'],
-    ['action' => 'Connected FitBit device', 'time' => '1 day ago'],
-    ['action' => 'Completed profile setup', 'time' => '2 days ago']
-];
+include '../../database/db.php';
 ?>
 
 <!DOCTYPE html>

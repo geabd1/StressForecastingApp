@@ -44,11 +44,11 @@ include '../../database/db.php';
 </head>
 <body>
     <!-- Include Navbar -->
-    <?php include '../components/navbar.php'; ?>
+    <?php include '.../components/navbar.php'; ?>
 
     <!-- About Section -->
     <div class="about-container">
-        <h1>About Us</h1>
+        <h1>About Us </h1>
         <p>
             CalmCast was created by three Computer Science students at Morgan State University with a mission
             to make stress easier to understand and manage. The app helps users detect their stress levels,

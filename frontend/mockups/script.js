@@ -95,6 +95,65 @@ if (document.querySelector('.rating-scale')) {
         });
     });
 }
+// Example last 7 days (replace with backend or localStorage data)
+const moodData = [
+  { date: "Mon", rating: 6 },
+  { date: "Tue", rating: 7 },
+  { date: "Wed", rating: 8 },
+  { date: "Thu", rating: 6 },
+  { date: "Fri", rating: 9 },
+  { date: "Sat", rating: 7 },
+  { date: "Sun", rating: 8 },
+];
+
+const ctx = document.getElementById("moodChart").getContext("2d");
+
+const moodChart = new Chart(ctx, {
+  type: "line",
+  data: {
+    labels: moodData.map(entry => entry.date),
+    datasets: [
+      {
+        label: "Mood Rating (1–10)",
+        data: moodData.map(entry => entry.rating),
+        borderColor: "#4caf50",
+        backgroundColor: "rgba(76, 175, 80, 0.2)",
+        borderWidth: 2,
+        tension: 0.4,
+        fill: true,
+        pointRadius: 5,
+        pointBackgroundColor: "#388e3c"
+      }
+    ]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        min: 0,
+        max: 10,
+        title: {
+          display: true,
+          text: "Mood Level"
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: "Day of Week"
+        }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      title: {
+        display: true,
+        text: "Your Mood Trends This Week"
+      }
+    }
+  }
+});
+
 
 // Chart Implementation for Forecast Page
 if (document.getElementById('stressChart')) {

@@ -19,7 +19,8 @@
                     <li><a href="home.html" class="active">Home</a></li>
                     <li><a href="forecast.html">My Forecast</a></li>
                     <li><a href="about.html">About</a></li>
-                    <li><a href="index.html">Sign Out</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="#" id="sign-out-btn">Sign Out</a></li>
                 </ul>
             </nav>
         </div>
@@ -99,6 +100,7 @@
                             <span class="count-value">5 days</span>
                         </div>
                     </div>
+                    <canvas id="moodChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </div>
@@ -109,6 +111,8 @@
             <p>&copy; 2023 CalmCast. All rights reserved.</p>
         </div>
     </footer>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 
     <script src="script.js"></script>
 </body>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Forecast - CalmCast</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Additional Forecast Page Styles */
+        .forecast-container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            margin-bottom: 0.5rem;
+        }
+
+        .report-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .report-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .report-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+        }
+
+        .daily-icon {
+            background: linear-gradient(135deg, #ff7e5f, #ff9a8b);
+        }
+
+        .weekly-icon {
+            background: linear-gradient(135deg, #4a6fa5, #6b8cbc);
+        }
+
+        .data-icon {
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
+        }
+
+        .tips-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .tips-list li {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .tips-list li:before {
+            content: "💡";
+            position: absolute;
+            left: 0;
+            font-size: 1.1rem;
+        }
+
+        .tips-list li:last-child {
+            border-bottom: none;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .data-card {
+            background: var(--light-color);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .data-card.good {
+            border-left-color: #4caf50;
+        }
+
+        .data-card.average {
+            border-left-color: #ff9800;
+        }
+
+        .data-card.needs-improvement {
+            border-left-color: #f44336;
+        }
+
+        .data-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin: 0.5rem 0;
+        }
+
+        .data-description {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .mood-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .mood-low {
+            background-color: #ffebee;
+            color: #d32f2f;
+        }
+
+        .mood-medium {
+            background-color: #fff3e0;
+            color: #f57c00;
+        }
+
+        .mood-high {
+            background-color: #e8f5e8;
+            color: #388e3c;
+        }
+
+        .stress-factor {
+            display: inline-block;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            margin: 0.5rem 0.5rem 0.5rem 0;
+        }
+
+        .refresh-section {
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .data-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .report-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🌿</span>
+                <span>CalmCast</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="home.html">Home</a></li>
+                    <li><a href="forecast.html" class="active">My Forecast</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="profile.html">Profile</a></li>
+                    <li><a href="#" id="sign-out-btn">Sign Out</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="forecast-container">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h1>My Forecast</h1>
+                    <p class="description" id="welcome-message">Hey Jane! Let's take a look at your forecast</p>
+                </div>
+
+                <!-- Daily Report -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-icon daily-icon">D</div>
+                        <h2>Daily Report</h2>
+                    </div>
+                    <div id="daily-content">
+                        <div class="mood-indicator mood-low" id="daily-mood">
+                            😔 Low Mood Today
+                        </div>
+                        <p id="daily-description">
+                            You reported to feel low today due to work related stress. Here are tips to try and alleviate that stress:
+                        </p>
+                        <ul class="tips-list" id="daily-tips">
+                            <li>Take a 2–5 minute breathing break (inhale for 4, hold for 4, exhale for 6)</li>
+                            <li>Step away from your desk and stretch your shoulders/neck</li>
+                            <li>Write down your top 3 priorities and focus only on them</li>
+                            <li>Walk for 10 minutes (outside if possible) to reset your energy</li>
+                        </ul>
+                        <div id="daily-factors">
+                            <strong>Primary Stress Factors:</strong>
+                            <span class="stress-factor">Work</span>
+                            <span class="stress-factor">Deadlines</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Report -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-icon weekly-icon">W</div>
+                        <h2>Weekly Report</h2>
+                    </div>
+                    <div id="weekly-content">
+                        <div class="mood-indicator mood-medium" id="weekly-mood">
+                            😐 Mixed Week
+                        </div>
+                        <p id="weekly-description">
+                            This week showed varying stress levels with peaks on Monday and Wednesday. Here's how to maintain balance:
+                        </p>
+                        <ul class="tips-list" id="weekly-tips">
+                            <li>Schedule regular breaks throughout your workday</li>
+                            <li>Practice mindfulness meditation for 10 minutes daily</li>
+                            <li>Maintain consistent sleep schedule (even on weekends)</li>
+                            <li>Plan social activities to counter work stress</li>
+                        </ul>
+                        <div id="weekly-factors">
+                            <strong>Common Stress Patterns:</strong>
+                            <span class="stress-factor">Monday Blues</span>
+                            <span class="stress-factor">Mid-week Pressure</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Your Data Section -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-icon data-icon">Y</div>
+                        <h2>Your Data</h2>
+                    </div>
+                    <div class="data-grid" id="data-grid">
+                        <div class="data-card good">
+                            <h4>Sleep Quality</h4>
+                            <div class="data-value" id="sleep-hours">8 hrs/night</div>
+                            <p class="data-description" id="sleep-description">
+                                You've averaged about 8 hr of sleep. This is a great amount for you. Keep counting sheep.
+                            </p>
+                        </div>
+                        <div class="data-card average">
+                            <h4>Exercise Frequency</h4>
+                            <div class="data-value" id="exercise-frequency">3 days/week</div>
+                            <p class="data-description" id="exercise-description">
+                                You reported to have worked out at least 3 days/week. Consider adding one more day for optimal benefits.
+                            </p>
+                        </div>
+                        <div class="data-card good">
+                            <h4>Stress Management</h4>
+                            <div class="data-value" id="stress-score">7/10</div>
+                            <p class="data-description" id="stress-description">
+                                Good job using stress management techniques. Continue practicing breathing exercises.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Refresh Section -->
+                <div class="refresh-section">
+                    <button class="cta-button secondary-button" id="refresh-forecast">
+                        🔄 Refresh Forecast
+                    </button>
+                    <p class="description" style="margin-top: 0.5rem; font-size: 0.9rem;">
+                        Last updated: <span id="last-updated">Just now</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 CalmCast. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="forecast.js"></script>
+</body>
+</html>

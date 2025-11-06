@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - CalmCast</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- Navigation -->
     <header>
         <div class="container">
             <div class="logo">
@@ -20,7 +19,7 @@
                     <li><a href="forecast.html">My Forecast</a></li>
                     <li><a href="about.html">About</a></li>
                     <li><a href="profile.html">Profile</a></li>
-                    <li><a href="#" id="sign-out-btn">Sign Out</a></li>
+                    <li><a href="index.html" id="sign-out-btn">Sign Out</a></li>
                 </ul>
             </nav>
         </div>
@@ -29,75 +28,75 @@
     <main>
         <div class="container">
             <div class="welcome-section">
-                <h2>Hello, Jane</h2>
+                <h2 id="welcome-message">Hello!</h2> <!-- Will be updated by JavaScript -->
                 <div class="check-in-card">
-                    <h3>Check In</h3>
+                    <h3>Daily Check In</h3>
                     <p>How would you rate your mood today (1 - 10)?</p>
                     
                     <div class="mood-rating">
                         <div class="rating-scale">
                             <div class="rating-bar" data-rating="1">
                                 <div class="bar-fill" style="height: 10%"></div>
-                                <span class="bar-label">1 - Very Rough Day</span>
+                                <span class="bar-label">1 - Very Rough</span>
                             </div>
                             <div class="rating-bar" data-rating="2">
                                 <div class="bar-fill" style="height: 20%"></div>
-                                <span class="bar-label">2 - Rough Day</span>
+                                <span class="bar-label">2 - Rough</span>
                             </div>
                             <div class="rating-bar" data-rating="3">
                                 <div class="bar-fill" style="height: 30%"></div>
-                                <span class="bar-label">3 - Difficult Day</span>
+                                <span class="bar-label">3 - Difficult</span>
                             </div>
                             <div class="rating-bar" data-rating="4">
                                 <div class="bar-fill" style="height: 40%"></div>
-                                <span class="bar-label">4 - Challenging Day</span>
+                                <span class="bar-label">4 - Challenging</span>
                             </div>
                             <div class="rating-bar" data-rating="5">
                                 <div class="bar-fill" style="height: 50%"></div>
-                                <span class="bar-label">5 - Neutral Day</span>
+                                <span class="bar-label">5 - Neutral</span>
                             </div>
                             <div class="rating-bar" data-rating="6">
                                 <div class="bar-fill" style="height: 60%"></div>
-                                <span class="bar-label">6 - Okay Day</span>
+                                <span class="bar-label">6 - Okay</span>
                             </div>
                             <div class="rating-bar" data-rating="7">
                                 <div class="bar-fill" style="height: 70%"></div>
-                                <span class="bar-label">7 - Good Day</span>
+                                <span class="bar-label">7 - Good</span>
                             </div>
                             <div class="rating-bar" data-rating="8">
                                 <div class="bar-fill" style="height: 80%"></div>
-                                <span class="bar-label">8 - Very Good Day</span>
+                                <span class="bar-label">8 - Very Good</span>
                             </div>
                             <div class="rating-bar" data-rating="9">
                                 <div class="bar-fill" style="height: 90%"></div>
-                                <span class="bar-label">9 - Great Day</span>
+                                <span class="bar-label">9 - Great</span>
                             </div>
                             <div class="rating-bar" data-rating="10">
                                 <div class="bar-fill" style="height: 100%"></div>
-                                <span class="bar-label">10 - Excellent Day</span>
+                                <span class="bar-label">10 - Excellent</span>
                             </div>
                         </div>
                         <div class="selected-rating">
-                            <p><strong>Current Selection:</strong> <span id="current-rating">2 – Very Rough Day: High stress, little energy, struggling to get through tasks</span></p>
+                            <p><strong>Current Selection:</strong> <span id="current-rating">Please select a rating</span></p>
                         </div>
-                        <button class="cta-button">Check In</button>
+                        <button class="cta-button" id="check-in-btn">Check In</button>
                     </div>
                 </div>
                 
                 <div class="last-week-review">
-                    <h3>Last Week Review</h3>
-                    <p>Based on last week check ins, you have an average rating of 7. Higher than the week before. Keep up the good work!</p>
+                    <h3>Your Weekly Overview</h3>
+                    <p id="weekly-summary">Start tracking your mood to see insights here!</p>
                     <div class="rating-summary">
                         <div class="rating-item">
-                            <span class="rating-label">Rating</span>
+                            <span class="rating-label">Average Mood</span>
                             <div class="rating-bar-small">
-                                <div class="bar-fill" style="width: 70%"></div>
+                                <div class="bar-fill" style="width: 50%"></div>
                             </div>
-                            <span class="rating-value">7/10</span>
+                            <span class="rating-value" id="avg-mood">-/-</span>
                         </div>
                         <div class="check-in-count">
-                            <span class="count-label">Check Ins</span>
-                            <span class="count-value">5 days</span>
+                            <span class="count-label">Check Ins This Week</span>
+                            <span class="count-value" id="checkin-count">0 days</span>
                         </div>
                     </div>
                     <canvas id="moodChart" width="400" height="200"></canvas>
@@ -108,12 +107,13 @@
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 CalmCast. All rights reserved.</p>
+            <p>&copy; 2025 CalmCast. All rights reserved.</p>
         </div>
     </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-    <script src="script.js"></script>
+    <script src="js/userData.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/home.js"></script>
 </body>
 </html>

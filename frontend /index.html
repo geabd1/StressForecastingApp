@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CalmCast: The Stress Forecaster</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <!-- Navigation -->
     <header>
@@ -16,9 +18,6 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="home.html">Home</a></li>
-                    <li><a href="forecast.html">My Forecast</a></li>
-                    <li><a href="about.html">About</a></li>
                     <li><a href="index.html" class="active">Sign In</a></li>
                 </ul>
             </nav>
@@ -30,7 +29,8 @@
             <h1>CalmCast: The Stress Forecaster</h1>
             <p class="tagline">Better the Body, Better the Mind</p>
             <p class="description">
-                Dealing with stress? CalmCast was created to help. Designed to track users physicality to help with detecting and alleviating stress for a better quality in life.
+                Dealing with stress? CalmCast was created to help. Designed to track users physicality to help with
+                detecting and alleviating stress for a better quality in life.
             </p>
             <p class="description">
                 Sign up today to get started on your journey!
@@ -42,7 +42,7 @@
 
         <!-- Sign In Form -->
         <div id="sign-in-form" class="form-container hidden">
-            <h2 class="form-title">CalmCast: The Stress Forecaster</h2>
+            <h2 class="form-title">Sign In to CalmCast</h2>
             <form id="sign-in">
                 <div class="form-group">
                     <label for="username">Username</label>
@@ -61,10 +61,10 @@
 
         <!-- Sign Up Form -->
         <div id="sign-up-form" class="form-container hidden">
-            <h2 class="form-title">CalmCast: The Stress Forecaster</h2>
+            <h2 class="form-title">Join CalmCast</h2>
             <form id="sign-up">
                 <div class="form-group">
-                    <label for="name">Name</label>
+                    <label for="name">Full Name</label>
                     <input type="text" id="name" name="name" required>
                 </div>
                 <div class="form-group">
@@ -79,20 +79,24 @@
                     <label for="new-password">Password</label>
                     <input type="password" id="new-password" name="password" required>
                 </div>
-                <button type="submit" class="cta-button" style="width: 100%;">Sign Up</button>
+                <button type="submit" class="cta-button" style="width: 100%;">Create Account</button>
             </form>
             <div class="form-footer">
                 <p>Have an account? <a href="#" id="sign-in-link">Sign in</a></p>
             </div>
         </div>
+
     </main>
 
     <footer>
         <div class="container">
-            <p>&copy; 2023 CalmCast. All rights reserved.</p>
+            <p>&copy; 2024 CalmCast. All rights reserved.</p>
         </div>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="js/userData.js"></script>
+    <script src="js/script.js"></script>
+    <script src="js/auth.js"></script>
 </body>
+
 </html>

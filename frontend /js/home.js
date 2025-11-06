@@ -1,4 +1,4 @@
-// js/home.js
+// js/home.js 
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication
     if (!userManager.isAuthenticated()) {
@@ -16,7 +16,41 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup mood check-in
     setupMoodCheckIn();
+    
+    // Setup rating bar interactions
+    setupRatingBars();
 });
+
+function setupRatingBars() {
+    const ratingBars = document.querySelectorAll('.rating-bar');
+    const currentRating = document.getElementById('current-rating');
+    
+    const ratingDescriptions = {
+        1: '1 – Very Rough Day: High stress, little energy, struggling to get through tasks',
+        2: '2 – Rough Day: Significant stress, low energy, difficulty focusing',
+        3: '3 – Difficult Day: Noticeable stress, reduced productivity',
+        4: '4 – Challenging Day: Some stress, but manageable',
+        5: '5 – Neutral Day: Balanced mood, normal stress levels',
+        6: '6 – Okay Day: Generally positive with minor stressors',
+        7: '7 – Good Day: Positive mood, good energy levels',
+        8: '8 – Very Good Day: High energy, minimal stress',
+        9: '9 – Great Day: Excellent mood, highly productive',
+        10: '10 – Excellent Day: Peak performance, completely stress-free'
+    };
+    
+    ratingBars.forEach(bar => {
+        bar.addEventListener('click', () => {
+            // Remove selected class from all bars
+            ratingBars.forEach(b => b.classList.remove('selected'));
+            // Add selected class to clicked bar
+            bar.classList.add('selected');
+            
+            // Update rating description
+            const rating = bar.getAttribute('data-rating');
+            currentRating.textContent = ratingDescriptions[rating];
+        });
+    });
+}
 
 function updateMoodData() {
     const user = userManager.getCurrentUser();
@@ -54,7 +88,6 @@ function updateMoodData() {
 }
 
 function setupMoodCheckIn() {
-    const ratingBars = document.querySelectorAll('.rating-bar');
     const checkInBtn = document.getElementById('check-in-btn');
     
     if (checkInBtn) {
@@ -77,7 +110,7 @@ function setupMoodCheckIn() {
                     updateMoodData();
                     
                     // Reset selection
-                    ratingBars.forEach(b => b.classList.remove('selected'));
+                    document.querySelectorAll('.rating-bar').forEach(b => b.classList.remove('selected'));
                     document.getElementById('current-rating').textContent = 'Please select a rating';
                     
                 } catch (error) {
@@ -362,7 +395,7 @@ function getPointColors(moodData) {
     });
 }
 
-// Add this function to userData.js to enhance the weekly data
+// Enhanced weekly mood data with emojis
 function getEnhancedWeeklyMoodData() {
     const basicData = userManager.getWeeklyMoodData();
     const user = userManager.getCurrentUser();
@@ -388,3 +421,11 @@ function getEnhancedWeeklyMoodData() {
         };
     });
 }
+
+// Add event listener for page visibility to refresh data when returning to page
+document.addEventListener('visibilitychange', function() {
+    if (!document.hidden && userManager.isAuthenticated()) {
+        // Refresh mood data when user returns to the page
+        updateMoodData();
+    }
+});

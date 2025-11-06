@@ -1,4 +1,4 @@
-// js/auth.js
+// js/auth.js 
 document.addEventListener('DOMContentLoaded', function() {
     // Check authentication state
     if (userManager.isAuthenticated() && window.location.pathname.endsWith('index.html')) {
@@ -36,7 +36,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 submitBtn.textContent = 'Signing In...';
                 submitBtn.disabled = true;
 
-                await userManager.login({ username, password });
+                await userManager.login({
+                    username: username,
+                    password: password
+                });
+                
                 window.location.href = 'home.html';
             } catch (error) {
                 alert('Login failed: ' + error.message);

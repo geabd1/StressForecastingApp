@@ -44,37 +44,8 @@ if (signUpLink) {
     });
 }
 
-// Mood Rating Interaction (Home Page)
-if (document.querySelector('.rating-scale')) {
-    const ratingBars = document.querySelectorAll('.rating-bar');
-    const currentRating = document.getElementById('current-rating');
-    
-    const ratingDescriptions = {
-        1: '1 – Very Rough Day: High stress, little energy, struggling to get through tasks',
-        2: '2 – Rough Day: Significant stress, low energy, difficulty focusing',
-        3: '3 – Difficult Day: Noticeable stress, reduced productivity',
-        4: '4 – Challenging Day: Some stress, but manageable',
-        5: '5 – Neutral Day: Balanced mood, normal stress levels',
-        6: '6 – Okay Day: Generally positive with minor stressors',
-        7: '7 – Good Day: Positive mood, good energy levels',
-        8: '8 – Very Good Day: High energy, minimal stress',
-        9: '9 – Great Day: Excellent mood, highly productive',
-        10: '10 – Excellent Day: Peak performance, completely stress-free'
-    };
-    
-    ratingBars.forEach(bar => {
-        bar.addEventListener('click', () => {
-            // Remove selected class from all bars
-            ratingBars.forEach(b => b.classList.remove('selected'));
-            // Add selected class to clicked bar
-            bar.classList.add('selected');
-            
-            // Update rating description
-            const rating = bar.getAttribute('data-rating');
-            currentRating.textContent = ratingDescriptions[rating];
-        });
-    });
-}
+// Mood Rating Interaction (Home Page) - MOVED TO home.js
+// This functionality is now handled in home.js
 
 // Utility function to format date
 function formatDate(date) {
@@ -96,4 +67,9 @@ function timeAgo(timestamp) {
     if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
     if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
     return formatDate(timestamp);
+}
+
+// Global helper function for API calls
+async function makeApiCall(endpoint, options = {}) {
+    return userManager.apiCall(endpoint, options);
 }

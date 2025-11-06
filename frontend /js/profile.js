@@ -1,4 +1,4 @@
-// js/profile.js
+// js/profile.js 
 document.addEventListener('DOMContentLoaded', function() {
     if (!userManager.isAuthenticated()) {
         window.location.href = 'index.html';
@@ -24,16 +24,23 @@ document.addEventListener('DOMContentLoaded', function() {
 function updateProfileHeader(user) {
     // Update avatar with user's first initial
     const userAvatar = document.getElementById('user-avatar');
-    userAvatar.textContent = user.name.charAt(0).toUpperCase();
+    if (userAvatar) {
+        userAvatar.textContent = user.name ? user.name.charAt(0).toUpperCase() : 'U';
+    }
     
     // Update profile name
-    document.getElementById('profile-name').textContent = `${user.name}'s Profile`;
+    const profileName = document.getElementById('profile-name');
+    if (profileName) {
+        profileName.textContent = `${user.name || 'User'}'s Profile`;
+    }
     
     // Add subtle animation to welcome the user
-    userAvatar.style.transform = 'scale(1.1)';
-    setTimeout(() => {
-        userAvatar.style.transform = 'scale(1)';
-    }, 300);
+    if (userAvatar) {
+        userAvatar.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            userAvatar.style.transform = 'scale(1)';
+        }, 300);
+    }
 }
 
 function updateFitbitStatus() {
@@ -41,6 +48,8 @@ function updateFitbitStatus() {
     const fitbitStatus = document.getElementById('fitbit-status');
     const connectBtn = document.getElementById('connect-fitbit-btn');
     const fitbitSetting = document.getElementById('fitbit-setting');
+    
+    if (!fitbitStatus || !connectBtn || !fitbitSetting) return;
     
     if (user.fitbit_connected) {
         fitbitStatus.className = 'status-badge status-connected';
@@ -65,25 +74,16 @@ function updateFitbitStatus() {
 
 async function connectFitbit() {
     const connectBtn = document.getElementById('connect-fitbit-btn');
+    if (!connectBtn) return;
+    
     const originalText = connectBtn.textContent;
     
     try {
         connectBtn.textContent = 'Connecting...';
         connectBtn.disabled = true;
 
-        const authUrl = await userManager.getFitbitAuthUrl();
-        
-        // Open Fitbit authorization in a popup window
-        const popup = window.open(authUrl, 'fitbit_auth', 'width=600,height=700,scrollbars=yes');
-        
-        // Check for popup closure to detect completion
-        const checkPopup = setInterval(() => {
-            if (popup.closed) {
-                clearInterval(checkPopup);
-                // Simulate successful connection for demo
-                simulateFitbitConnection();
-            }
-        }, 500);
+        // Use the Fitbit login endpoint from your backend
+        window.location.href = `${userManager.API_BASE}/fitbit/login`;
         
     } catch (error) {
         alert('Failed to connect Fitbit: ' + error.message);
@@ -92,30 +92,17 @@ async function connectFitbit() {
     }
 }
 
-function simulateFitbitConnection() {
-    // Simulate Fitbit connection for demo purposes
-    const user = userManager.getCurrentUser();
-    user.fitbit_connected = true;
-    user.fitbit_last_sync = new Date().toISOString();
-    userManager.saveLocalUserData();
-    
-    updateFitbitStatus();
-    updateRecentActivity(user);
-    
-    alert('✅ Fitbit connected successfully! Your data will now sync automatically.');
-}
-
 async function syncFitbitData() {
     const connectBtn = document.getElementById('connect-fitbit-btn');
+    if (!connectBtn) return;
+    
     const originalText = connectBtn.textContent;
     
     try {
         connectBtn.textContent = '🔄 Syncing...';
         connectBtn.disabled = true;
 
-        // Simulate API call delay
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        
+        // Get fresh Fitbit data
         const fitbitData = await userManager.getFitbitData();
         
         // Update user data with sync timestamp
@@ -150,7 +137,6 @@ function updateUserStats(user) {
     const avgMood = userManager.getAverageMood();
     const accountAge = Math.floor((new Date() - new Date(user.created_at || new Date())) / (1000 * 60 * 60 * 24));
     
-    // You can display these stats in the profile if you add elements for them
     console.log('User Stats:', {
         totalMoodEntries,
         avgMood,
@@ -161,6 +147,8 @@ function updateUserStats(user) {
 
 function updateRecentActivity(user) {
     const activityList = document.getElementById('recent-activity');
+    if (!activityList) return;
+
     activityList.innerHTML = '';
 
     const activities = [];
@@ -175,7 +163,7 @@ function updateRecentActivity(user) {
             
             activities.push({
                 type: 'Mood Check-in',
-                description: `Rated mood as ${entry.rating}/10 ${moodEmojis[entry.rating]}`,
+                description: `Rated mood as ${entry.rating}/10 ${moodEmojis[entry.rating] || '😊'}`,
                 time: new Date(entry.timestamp),
                 icon: '😊'
             });
@@ -200,14 +188,14 @@ function updateRecentActivity(user) {
         icon: '🎉'
     });
 
-    // Add forecast views if available
-    if (user.forecast_views) {
-        user.forecast_views.slice(-2).forEach(view => {
+    // Add recent activities from user data
+    if (user.recent_activities && user.recent_activities.length > 0) {
+        user.recent_activities.slice(0, 3).forEach(activity => {
             activities.push({
-                type: 'Forecast Viewed',
-                description: 'Checked stress forecast and insights',
-                time: new Date(view.timestamp),
-                icon: '📊'
+                type: activity.type,
+                description: activity.description,
+                time: new Date(activity.timestamp),
+                icon: '📝'
             });
         });
     }
@@ -245,14 +233,6 @@ function updateRecentActivity(user) {
             activityList.appendChild(li);
         });
     }
-    
-    // Update activity count in settings section if needed
-    updateActivityStats(recentActivities.length);
-}
-
-function updateActivityStats(activityCount) {
-    // You can update any stats display here
-    console.log(`Total activities: ${activityCount}`);
 }
 
 function setupEventListeners() {
@@ -261,57 +241,102 @@ function setupEventListeners() {
     const deleteModal = document.getElementById('delete-modal');
     
     // Settings modal
-    document.getElementById('edit-settings-btn').addEventListener('click', openSettingsModal);
-    document.getElementById('close-settings-modal').addEventListener('click', closeSettingsModal);
-    document.getElementById('cancel-settings').addEventListener('click', closeSettingsModal);
-    document.getElementById('save-settings').addEventListener('click', saveSettings);
+    const editSettingsBtn = document.getElementById('edit-settings-btn');
+    if (editSettingsBtn) {
+        editSettingsBtn.addEventListener('click', openSettingsModal);
+    }
+    
+    const closeSettingsModal = document.getElementById('close-settings-modal');
+    if (closeSettingsModal) {
+        closeSettingsModal.addEventListener('click', closeSettingsModal);
+    }
+    
+    const cancelSettings = document.getElementById('cancel-settings');
+    if (cancelSettings) {
+        cancelSettings.addEventListener('click', closeSettingsModal);
+    }
+    
+    const saveSettings = document.getElementById('save-settings');
+    if (saveSettings) {
+        saveSettings.addEventListener('click', saveSettings);
+    }
     
     // Delete account modal
-    document.getElementById('delete-account-btn').addEventListener('click', openDeleteModal);
-    document.getElementById('close-delete-modal').addEventListener('click', closeDeleteModal);
-    document.getElementById('cancel-delete').addEventListener('click', closeDeleteModal);
-    document.getElementById('confirm-delete-btn').addEventListener('click', confirmDelete);
+    const deleteAccountBtn = document.getElementById('delete-account-btn');
+    if (deleteAccountBtn) {
+        deleteAccountBtn.addEventListener('click', openDeleteModal);
+    }
+    
+    const closeDeleteModal = document.getElementById('close-delete-modal');
+    if (closeDeleteModal) {
+        closeDeleteModal.addEventListener('click', closeDeleteModal);
+    }
+    
+    const cancelDelete = document.getElementById('cancel-delete');
+    if (cancelDelete) {
+        cancelDelete.addEventListener('click', closeDeleteModal);
+    }
+    
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', confirmDelete);
+    }
     
     // Delete confirmation validation
     const confirmDeleteInput = document.getElementById('confirm-delete');
-    confirmDeleteInput.addEventListener('input', function() {
-        document.getElementById('confirm-delete-btn').disabled = this.value !== 'DELETE';
-    });
-    
-    // Add enter key support for delete confirmation
-    confirmDeleteInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter' && this.value === 'DELETE') {
-            confirmDelete();
-        }
-    });
+    if (confirmDeleteInput) {
+        confirmDeleteInput.addEventListener('input', function() {
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            if (confirmDeleteBtn) {
+                confirmDeleteBtn.disabled = this.value !== 'DELETE';
+            }
+        });
+        
+        confirmDeleteInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value === 'DELETE') {
+                confirmDelete();
+            }
+        });
+    }
 }
 
 function openSettingsModal() {
     const user = userManager.getCurrentUser();
     
     // Populate form with current user data
-    document.getElementById('settings-username').value = user.username;
-    document.getElementById('settings-email').value = user.email;
+    const usernameInput = document.getElementById('settings-username');
+    const emailInput = document.getElementById('settings-email');
+    
+    if (usernameInput) usernameInput.value = user.username || '';
+    if (emailInput) emailInput.value = user.email || '';
     
     // Clear password fields
-    document.getElementById('current-password').value = '';
-    document.getElementById('new-password').value = '';
-    document.getElementById('confirm-password').value = '';
+    const currentPassword = document.getElementById('current-password');
+    const newPassword = document.getElementById('new-password');
+    const confirmPassword = document.getElementById('confirm-password');
+    
+    if (currentPassword) currentPassword.value = '';
+    if (newPassword) newPassword.value = '';
+    if (confirmPassword) confirmPassword.value = '';
     
     // Show modal with animation
     const modal = document.getElementById('settings-modal');
-    modal.style.display = 'block';
-    setTimeout(() => {
-        modal.style.opacity = '1';
-    }, 10);
+    if (modal) {
+        modal.style.display = 'block';
+        setTimeout(() => {
+            modal.style.opacity = '1';
+        }, 10);
+    }
 }
 
 function closeSettingsModal() {
     const modal = document.getElementById('settings-modal');
-    modal.style.opacity = '0';
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 300);
+    if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
 }
 
 function openDeleteModal() {
@@ -321,15 +346,19 @@ function openDeleteModal() {
     const stats = getUserStatsSummary(user);
     
     const modal = document.getElementById('delete-modal');
+    if (!modal) return;
+    
     const warningText = modal.querySelector('.modal-body p:first-child');
-    warningText.innerHTML = `Are you sure you want to delete <strong>${user.name}'s</strong> account? This action cannot be undone.`;
+    if (warningText) {
+        warningText.innerHTML = `Are you sure you want to delete <strong>${user.name}'s</strong> account? This action cannot be undone.`;
+    }
     
     // Show user stats in the warning
     const statsElement = document.createElement('div');
     statsElement.className = 'user-stats-warning';
     statsElement.innerHTML = `
         <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px; padding: 10px; margin: 10px 0;">
-            <strong>📊 You will lose:</strong>
+            <strong>You will lose:</strong>
             <div style="margin-top: 5px;">
                 ${stats.moodEntries} mood check-ins<br>
                 ${stats.accountAge} days of progress<br>
@@ -342,7 +371,11 @@ function openDeleteModal() {
     if (existingStats) {
         existingStats.remove();
     }
-    modal.querySelector('.modal-body').insertBefore(statsElement, modal.querySelector('.modal-body ul'));
+    
+    const modalBody = modal.querySelector('.modal-body');
+    if (modalBody) {
+        modalBody.insertBefore(statsElement, modalBody.querySelector('ul'));
+    }
     
     modal.style.display = 'block';
     setTimeout(() => {
@@ -352,13 +385,17 @@ function openDeleteModal() {
 
 function closeDeleteModal() {
     const modal = document.getElementById('delete-modal');
-    modal.style.opacity = '0';
-    setTimeout(() => {
-        modal.style.display = 'none';
-        // Reset confirmation input
-        document.getElementById('confirm-delete').value = '';
-        document.getElementById('confirm-delete-btn').disabled = true;
-    }, 300);
+    if (modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            // Reset confirmation input
+            const confirmDeleteInput = document.getElementById('confirm-delete');
+            const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+            if (confirmDeleteInput) confirmDeleteInput.value = '';
+            if (confirmDeleteBtn) confirmDeleteBtn.disabled = true;
+        }, 300);
+    }
 }
 
 function getUserStatsSummary(user) {
@@ -375,6 +412,8 @@ function getUserStatsSummary(user) {
 
 async function saveSettings() {
     const saveBtn = document.getElementById('save-settings');
+    if (!saveBtn) return;
+    
     const originalText = saveBtn.textContent;
     
     try {
@@ -407,9 +446,6 @@ async function saveSettings() {
         user.username = username;
         user.email = email;
         
-        // Only update name if it's different (you might want to add a name field to the form)
-        // For now, we'll keep the original name
-        
         userManager.saveLocalUserData();
         
         // Add settings update activity
@@ -420,15 +456,10 @@ async function saveSettings() {
             timestamp: new Date().toISOString()
         });
 
-        // Update the profile header if name changed
-        if (user.name !== originalName) {
-            updateProfileHeader(user);
-        }
-
         updateRecentActivity(user);
         closeSettingsModal();
         
-        alert('✅ Profile settings updated successfully!');
+        alert('Profile settings updated successfully!');
         
     } catch (error) {
         alert('Failed to save settings: ' + error.message);
@@ -440,20 +471,19 @@ async function saveSettings() {
 
 function confirmDelete() {
     const confirmBtn = document.getElementById('confirm-delete-btn');
+    if (!confirmBtn) return;
+    
     const originalText = confirmBtn.textContent;
     
     try {
         confirmBtn.textContent = 'Deleting...';
         confirmBtn.disabled = true;
 
-        // Simulate API call for account deletion
-        setTimeout(() => {
-            // Clear all user data
-            userManager.logout();
-            
-            alert('😢 Your account has been deleted. Thank you for using CalmCast!');
-            window.location.href = 'index.html';
-        }, 1500);
+        // Clear all user data
+        userManager.logout();
+        
+        alert('Your account has been deleted. Thank you for using CalmCast!');
+        window.location.href = 'index.html';
         
     } catch (error) {
         alert('Failed to delete account: ' + error.message);
